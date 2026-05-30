@@ -41,8 +41,11 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'drf_spectacular',
+    ## Apps locales
+    'users',
+    'catalog',
+    'cart',
 ]
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -124,4 +127,22 @@ STATIC_URL = 'static/'
 # Esto le dice a Django REST Framework que use drf-spectacular para generar la documentación.
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+    #Configurar JWT en Django REST Framework
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'API E-commerce',
+    'DESCRIPTION': 'API para gestionar productos, variantes, carrito de compras, órdenes, pagos, reseñas, cupones y facturas.',
+    'VERSION': '1.0.0',
+}
+
+CORS_ALLOW_ALL_ORIGINS = True
+#Esto sirve para que, más adelante, si conectás un frontend, no te bloquee las peticiones
+
+AUTH_USER_MODEL = 'users.User'
+#Indica a Django que use nuestro modelo de usuario
+
