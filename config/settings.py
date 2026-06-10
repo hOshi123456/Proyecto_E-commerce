@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'users',
     'catalog',
     'cart',
+    'orders',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
