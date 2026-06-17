@@ -40,6 +40,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'status',
             'items',
             'total',
+            'paid_at',
             'created_at',
             'updated_at',
         ]
@@ -49,6 +50,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'status',
             'items',
             'total',
+            'paid_at',
             'created_at',
             'updated_at',
         ]

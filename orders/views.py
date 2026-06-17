@@ -1,4 +1,6 @@
 from django.db import transaction
+from django.utils import timezone
+from catalog.models import ProductVariant
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -79,4 +81,67 @@ class CheckoutView(APIView):
 
         serializer = OrderSerializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+    class SimulatePaymentView(APIView):
+        permission_classes = [IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request, order_id):
+        try:
+            order = Order.objects.select_for_update().get(
+                id=order_id,
+                user=request.user
+            )
+        except Order.DoesNotExist:
+            return Response(
+                {'detail': 'Orden no encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if order.status != Order.STATUS_PENDING:
+            return Response(
+                {'detail': 'Esta orden ya fue pagada o no está pendiente.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        order_items = order.items.select_related('variant', 'variant__product')
+
+        for item in order_items:
+            if item.variant is None:
+                return Response(
+                    {
+                        'detail': f'La variante del producto {item.product_name} ya no existe.'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            variant = ProductVariant.objects.select_for_update().get(
+                id=item.variant.id
+            )
+
+            if item.quantity > variant.stock:
+                return Response(
+                    {
+                        'detail': f'No hay stock suficiente para {item.product_name}. Stock disponible: {variant.stock}.'
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        for item in order_items:
+            variant = ProductVariant.objects.select_for_update().get(
+                id=item.variant.id
+            )
+            variant.stock -= item.quantity
+            variant.save()
+
+        order.status = Order.STATUS_PAID
+        order.paid_at = timezone.now()
+        order.save()
+
+        serializer = OrderSerializer(order)
+        return Response(
+            {
+                'detail': 'Pago simulado correctamente. Stock descontado.',
+                'order': serializer.data
+            },
+            status=status.HTTP_200_OK
+        )

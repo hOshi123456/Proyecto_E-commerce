@@ -29,6 +29,7 @@ class Order(models.Model):
         choices=STATUS_CHOICES,
         default=STATUS_PENDING
     )
+    paid_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

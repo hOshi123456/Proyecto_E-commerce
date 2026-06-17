@@ -21,7 +21,7 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'status', 'total', 'created_at']
+    list_display = ['id', 'user', 'status', 'total', 'created_at', 'paid_at']
     list_filter = ['status', 'created_at']
     search_fields = ['user__username', 'user__email']
     inlines = [OrderItemInline]
@@ -38,6 +38,6 @@ class OrderItemAdmin(admin.ModelAdmin):
         'unit_price',
         'quantity',
         'subtotal',
-        
+
     ]
     search_fields = ['product_name', 'order__user__username']
