@@ -1,15 +1,22 @@
+from decimal import Decimal
+
 from django.db import transaction
 from django.utils import timezone
-from catalog.models import ProductVariant
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from cart.models import Cart
+from catalog.models import ProductVariant
+from cupones.models import Cupon
+
 from .models import Order, OrderItem
-from .serializers import OrderSerializer
+from .serializers import (
+    CheckoutSerializer,
+    OrderSerializer,
+)
 
 
 class OrderListView(APIView):
@@ -42,29 +49,107 @@ class CheckoutView(APIView):
 
     @transaction.atomic
     def post(self, request):
-        cart, created = Cart.objects.get_or_create(user=request.user)
+        input_serializer = CheckoutSerializer(
+            data=request.data
+        )
+        input_serializer.is_valid(raise_exception=True)
 
-        if not cart.items.exists():
+        cupon_code = input_serializer.validated_data.get(
+            'cupon_code',
+            ''
+        ).strip().upper()
+
+        cart, created = Cart.objects.get_or_create(
+            user=request.user
+        )
+
+        cart_items = list(
+            cart.items.select_related(
+                'variant',
+                'variant__product'
+            )
+        )
+
+        if not cart_items:
             return Response(
                 {'detail': 'Tu carrito está vacío.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        for item in cart.items.select_related('variant', 'variant__product'):
+        for item in cart_items:
             if item.quantity > item.variant.stock:
                 return Response(
                     {
-                        'detail': f'No hay stock suficiente para {item.variant}. Stock disponible: {item.variant.stock}.'
+                        'detail': (
+                            f'No hay stock suficiente para '
+                            f'{item.variant}. '
+                            f'Stock disponible: '
+                            f'{item.variant.stock}.'
+                        )
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-        order = Order.objects.create(
-            user=request.user,
-            status=Order.STATUS_PENDING
+        cart_subtotal = sum(
+            (item.subtotal for item in cart_items),
+            Decimal('0.00')
         )
 
-        for item in cart.items.select_related('variant', 'variant__product'):
+        cupon = None
+        discount_amount = Decimal('0.00')
+
+        if cupon_code:
+            try:
+                cupon = Cupon.objects.get(
+                    code=cupon_code
+                )
+            except Cupon.DoesNotExist:
+                return Response(
+                    {
+                        'detail': (
+                            'El cupón ingresado no existe.'
+                        )
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            if not cupon.is_valid():
+                return Response(
+                    {
+                        'detail': (
+                            'El cupón no está disponible.'
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            if (
+                cart_subtotal
+                < cupon.minimum_order_amount
+            ):
+                return Response(
+                    {
+                        'detail': (
+                            'El carrito no alcanza el monto '
+                            'mínimo requerido por el cupón.'
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            discount_amount = (
+                cupon.calculate_discount(cart_subtotal)
+            )
+
+        order = Order.objects.create(
+            user=request.user,
+            status=Order.STATUS_PENDING,
+            cupon=cupon,
+            cupon_code=cupon.code if cupon else '',
+            discount_amount=discount_amount
+        )
+
+        for item in cart_items:
             variant = item.variant
 
             OrderItem.objects.create(
@@ -80,12 +165,17 @@ class CheckoutView(APIView):
         cart.items.all().delete()
 
         serializer = OrderSerializer(order)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    class SimulatePaymentView(APIView):
-        permission_classes = [IsAuthenticated]
 
-    @transaction.atomic
-    def post(self, request, order_id):
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED
+        )
+    
+class SimulatePaymentView(APIView):
+     permission_classes = [IsAuthenticated]
+
+     @transaction.atomic
+     def post(self, request, order_id):
         try:
             order = Order.objects.select_for_update().get(
                 id=order_id,
@@ -99,17 +189,48 @@ class CheckoutView(APIView):
 
         if order.status != Order.STATUS_PENDING:
             return Response(
-                {'detail': 'Esta orden ya fue pagada o no está pendiente.'},
+                {
+                    'detail': (
+                        'Esta orden ya fue pagada '
+                        'o no está pendiente.'
+                    )
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        order_items = order.items.select_related('variant', 'variant__product')
+        cupon = None
+
+        if order.cupon_id:
+            cupon = Cupon.objects.select_for_update().get(
+                id=order.cupon_id
+            )
+
+            if not cupon.is_valid():
+                return Response(
+                    {
+                        'detail': (
+                            'El cupón de esta orden '
+                            'ya no está disponible.'
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        order_items = list(
+            order.items.select_related(
+                'variant',
+                'variant__product'
+            )
+        )
 
         for item in order_items:
             if item.variant is None:
                 return Response(
                     {
-                        'detail': f'La variante del producto {item.product_name} ya no existe.'
+                        'detail': (
+                            f'La variante del producto '
+                            f'{item.product_name} ya no existe.'
+                        )
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
@@ -121,7 +242,11 @@ class CheckoutView(APIView):
             if item.quantity > variant.stock:
                 return Response(
                     {
-                        'detail': f'No hay stock suficiente para {item.product_name}. Stock disponible: {variant.stock}.'
+                        'detail': (
+                            f'No hay stock suficiente para '
+                            f'{item.product_name}. '
+                            f'Stock disponible: {variant.stock}.'
+                        )
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
@@ -130,17 +255,32 @@ class CheckoutView(APIView):
             variant = ProductVariant.objects.select_for_update().get(
                 id=item.variant.id
             )
+
             variant.stock -= item.quantity
-            variant.save()
+            variant.save(update_fields=['stock'])
+
+        if cupon:
+            cupon.times_used += 1
+            cupon.save(update_fields=['times_used'])
 
         order.status = Order.STATUS_PAID
         order.paid_at = timezone.now()
-        order.save()
+        order.save(
+            update_fields=[
+                'status',
+                'paid_at',
+                'updated_at',
+            ]
+        )
 
         serializer = OrderSerializer(order)
+
         return Response(
             {
-                'detail': 'Pago simulado correctamente. Stock descontado.',
+                'detail': (
+                    'Pago simulado correctamente. '
+                    'Stock descontado.'
+                ),
                 'order': serializer.data
             },
             status=status.HTTP_200_OK
