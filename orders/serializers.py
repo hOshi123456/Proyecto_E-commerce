@@ -80,3 +80,12 @@ class OrderSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
         ]
+        
+class OrderStatusUpdateSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(
+        choices=[
+            Order.STATUS_CANCELLED,
+            Order.STATUS_SHIPPED,
+            Order.STATUS_DELIVERED,
+        ]
+    )

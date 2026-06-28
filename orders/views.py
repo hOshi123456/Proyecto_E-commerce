@@ -4,7 +4,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -16,6 +16,7 @@ from .models import Order, OrderItem
 from .serializers import (
     CheckoutSerializer,
     OrderSerializer,
+    OrderStatusUpdateSerializer
 )
 
 
@@ -285,3 +286,85 @@ class SimulatePaymentView(APIView):
             },
             status=status.HTTP_200_OK
         )
+     
+class AdminOrderListView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        orders = (
+            Order.objects
+            .select_related('user', 'cupon')
+            .prefetch_related('items')
+            .all()
+        )
+
+        serializer = OrderSerializer(
+            orders,
+            many=True
+        )
+
+        return Response(serializer.data)
+
+
+class AdminOrderStatusView(APIView):
+    permission_classes = [IsAdminUser]
+
+    @transaction.atomic
+    def patch(self, request, order_id):
+        try:
+            order = Order.objects.select_for_update().get(
+                id=order_id
+            )
+        except Order.DoesNotExist:
+            return Response(
+                {'detail': 'Orden no encontrada.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = OrderStatusUpdateSerializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+
+        new_status = serializer.validated_data['status']
+
+        allowed_transitions = {
+            Order.STATUS_PENDING: {
+                Order.STATUS_CANCELLED,
+            },
+            Order.STATUS_PAID: {
+                Order.STATUS_SHIPPED,
+            },
+            Order.STATUS_SHIPPED: {
+                Order.STATUS_DELIVERED,
+            },
+        }
+
+        valid_statuses = allowed_transitions.get(
+            order.status,
+            set()
+        )
+
+        if new_status not in valid_statuses:
+            return Response(
+                {
+                    'detail': (
+                        f'No se puede cambiar una orden '
+                        f'de {order.status} a {new_status}.'
+                    )
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        order.status = new_status
+        order.save(
+            update_fields=[
+                'status',
+                'updated_at',
+            ]
+        )
+
+        return Response({
+            'detail': 'Estado actualizado correctamente.',
+            'order': OrderSerializer(order).data,
+        })
