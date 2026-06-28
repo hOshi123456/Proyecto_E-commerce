@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'orders',
     'cupones',
     'resenas',
+    'facturas',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
