@@ -1,0 +1,26 @@
+# Entornos virtuales locales
+venv/
+.venv/
+env/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# Git
+.git/
+.gitignore
+
+# Variables privadas
+.env
+
+# Base de datos local
+db.sqlite3
+
+# Editores
+.vscode/
+.idea/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
