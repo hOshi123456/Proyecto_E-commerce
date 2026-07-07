@@ -1,0 +1,1992 @@
+openapi: 3.0.3
+info:
+  title: API E-commerce
+  version: 1.0.0
+  description: API REST para gestionar usuarios, categorías, productos, variantes,
+    carrito, órdenes, pagos, cupones, reseñas y facturas PDF.
+paths:
+  /api/cart/:
+    get:
+      operationId: cart_retrieve
+      summary: Consultar carrito
+      tags:
+      - Carrito
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/cart/add/:
+    post:
+      operationId: cart_add_create
+      summary: Agregar variante al carrito
+      tags:
+      - Carrito
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCartItemRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AddCartItemRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AddCartItemRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/cart/clear/:
+    delete:
+      operationId: cart_clear_destroy
+      summary: Vaciar carrito
+      tags:
+      - Carrito
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/cart/items/{item_id}/:
+    patch:
+      operationId: cart_items_partial_update
+      summary: Actualizar item en el carrito
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Carrito
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCartItemRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCartItemRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateCartItemRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/cart/items/{item_id}/remove/:
+    delete:
+      operationId: cart_items_remove_destroy
+      summary: Eliminar item del carrito
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Carrito
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/catalog/categories/:
+    get:
+      operationId: catalog_categories_list
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+    post:
+      operationId: catalog_categories_create
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/catalog/categories/{id}/:
+    get:
+      operationId: catalog_categories_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Categoría.
+        required: true
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: catalog_categories_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Categoría.
+        required: true
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategoryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    patch:
+      operationId: catalog_categories_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Categoría.
+        required: true
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategoryRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    delete:
+      operationId: catalog_categories_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Categoría.
+        required: true
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/catalog/products/:
+    get:
+      operationId: catalog_products_list
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+          description: ''
+    post:
+      operationId: catalog_products_create
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+  /api/catalog/products/{id}/:
+    get:
+      operationId: catalog_products_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Producto.
+        required: true
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    put:
+      operationId: catalog_products_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Producto.
+        required: true
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    patch:
+      operationId: catalog_products_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Producto.
+        required: true
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProductRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProductRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    delete:
+      operationId: catalog_products_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Producto.
+        required: true
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/catalog/variants/:
+    get:
+      operationId: catalog_variants_list
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductVariant'
+          description: ''
+    post:
+      operationId: catalog_variants_create
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductVariantRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductVariantRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductVariantRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+          description: ''
+  /api/catalog/variants/{id}/:
+    get:
+      operationId: catalog_variants_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Variante de producto.
+        required: true
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+          description: ''
+    put:
+      operationId: catalog_variants_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Variante de producto.
+        required: true
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductVariantRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductVariantRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductVariantRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+          description: ''
+    patch:
+      operationId: catalog_variants_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Variante de producto.
+        required: true
+      tags:
+      - Catálogo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductVariantRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProductVariantRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProductVariantRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVariant'
+          description: ''
+    delete:
+      operationId: catalog_variants_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Variante de producto.
+        required: true
+      tags:
+      - Catálogo
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/cupones/:
+    get:
+      operationId: cupones_list
+      tags:
+      - Cupones
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cupon'
+          description: ''
+    post:
+      operationId: cupones_create
+      tags:
+      - Cupones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CuponRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CuponRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CuponRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cupon'
+          description: ''
+  /api/cupones/{id}/:
+    get:
+      operationId: cupones_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Cupón.
+        required: true
+      tags:
+      - Cupones
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cupon'
+          description: ''
+    put:
+      operationId: cupones_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Cupón.
+        required: true
+      tags:
+      - Cupones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CuponRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CuponRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CuponRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cupon'
+          description: ''
+    patch:
+      operationId: cupones_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Cupón.
+        required: true
+      tags:
+      - Cupones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCuponRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCuponRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCuponRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cupon'
+          description: ''
+    delete:
+      operationId: cupones_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Cupón.
+        required: true
+      tags:
+      - Cupones
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/cupones/validate/:
+    post:
+      operationId: cupones_validate_create
+      description: Comprueba si un cupón está activo y calcula el descuento según
+        el subtotal.
+      summary: Validar cupón
+      tags:
+      - Cupones
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CuponValidationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CuponValidationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CuponValidationRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CuponValidationResponse'
+          description: ''
+  /api/facturas/orders/{order_id}/pdf/:
+    get:
+      operationId: facturas_orders_pdf_retrieve
+      description: Genera un archivo PDF con la factura de una orden pagada. El archivo
+        se descarga automáticamente.
+      summary: Generar factura en PDF
+      parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Facturas
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: string
+                format: binary
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/orders/:
+    get:
+      operationId: orders_list
+      summary: Listar órdenes del usuario
+      tags:
+      - Órdenes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+          description: ''
+  /api/orders/{order_id}/:
+    get:
+      operationId: orders_retrieve
+      summary: Detalles de una orden
+      parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Órdenes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/orders/{order_id}/pay/:
+    post:
+      operationId: orders_pay_create
+      description: Marca una orden pendiente como pagada, descuenta el stock y registra
+        el uso del cupón.
+      summary: Simular pago de una orden
+      parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Órdenes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentResponse'
+          description: ''
+  /api/orders/admin/:
+    get:
+      operationId: orders_admin_list
+      summary: Listar todas las órdenes (admin)
+      tags:
+      - Órdenes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+          description: ''
+  /api/orders/admin/{order_id}/status/:
+    patch:
+      operationId: orders_admin_status_partial_update
+      description: Permite al administrador cancelar, enviar o marcar una orden como
+        entregada.
+      summary: Actualizar estado de una orden
+      parameters:
+      - in: path
+        name: order_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - Órdenes - Administración
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdateRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminOrderStatusResponse'
+          description: ''
+  /api/orders/checkout/:
+    post:
+      operationId: orders_checkout_create
+      description: Permite aplicar opcionalmente un cupón.
+      summary: Crear orden desde el carrito
+      tags:
+      - Órdenes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CheckoutRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/resenas/:
+    get:
+      operationId: resenas_list
+      tags:
+      - Reseñas
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Resena'
+          description: ''
+    post:
+      operationId: resenas_create
+      tags:
+      - Reseñas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResenaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResenaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResenaRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resena'
+          description: ''
+  /api/resenas/{id}/:
+    get:
+      operationId: resenas_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reseña.
+        required: true
+      tags:
+      - Reseñas
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resena'
+          description: ''
+    put:
+      operationId: resenas_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reseña.
+        required: true
+      tags:
+      - Reseñas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResenaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResenaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResenaRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resena'
+          description: ''
+    patch:
+      operationId: resenas_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reseña.
+        required: true
+      tags:
+      - Reseñas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedResenaRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedResenaRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedResenaRequest'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resena'
+          description: ''
+    delete:
+      operationId: resenas_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Reseña.
+        required: true
+      tags:
+      - Reseñas
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/users/login/:
+    post:
+      operationId: users_login_create
+      description: Devuelve los tokens access y refresh.
+      summary: Iniciar sesión
+      tags:
+      - Usuarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+            examples:
+              InicioDeSesión:
+                value:
+                  username: cliente_demo
+                  password: Cliente2026
+                summary: Inicio de sesión
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/users/me/:
+    get:
+      operationId: users_me_retrieve
+      summary: Consultar usuario autenticado
+      tags:
+      - Usuarios
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/users/register/:
+    post:
+      operationId: users_register_create
+      description: Crea un nuevo usuario con rol de cliente.
+      summary: Registrar cliente
+      tags:
+      - Usuarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              RegistroDeCliente:
+                value:
+                  username: cliente_demo
+                  email: cliente.demo@gmail.com
+                  first_name: María
+                  last_name: González
+                  phone: 0981123456
+                  password: Cliente2026
+                  password2: Cliente2026
+                summary: Registro de cliente
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /api/users/token/refresh/:
+    post:
+      operationId: users_token_refresh_create
+      description: Genera un access nuevo utilizando el refresh token.
+      summary: Renovar token de acceso
+      tags:
+      - Usuarios
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    AddCartItemRequest:
+      type: object
+      properties:
+        variant:
+          type: integer
+        quantity:
+          type: integer
+          minimum: 1
+      required:
+      - quantity
+      - variant
+    AdminOrderStatusResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+        order:
+          $ref: '#/components/schemas/Order'
+      required:
+      - detail
+      - order
+    Cart:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+          readOnly: true
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - items
+      - total
+      - updated_at
+      - user
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        variant:
+          type: integer
+        variant_detail:
+          allOf:
+          - $ref: '#/components/schemas/ProductVariant'
+          readOnly: true
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+      required:
+      - id
+      - subtotal
+      - variant
+      - variant_detail
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+      required:
+      - id
+      - name
+    CategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+      required:
+      - name
+    CheckoutRequest:
+      type: object
+      properties:
+        cupon_code:
+          type: string
+          maxLength: 50
+    Cupon:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 50
+        discount_type:
+          $ref: '#/components/schemas/DiscountTypeEnum'
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        minimum_order_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        valid_from:
+          type: string
+          format: date-time
+        valid_until:
+          type: string
+          format: date-time
+          nullable: true
+        usage_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        times_used:
+          type: integer
+          readOnly: true
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - code
+      - created_at
+      - discount_type
+      - discount_value
+      - id
+      - times_used
+      - updated_at
+    CuponRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 50
+        discount_type:
+          $ref: '#/components/schemas/DiscountTypeEnum'
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        minimum_order_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        valid_from:
+          type: string
+          format: date-time
+        valid_until:
+          type: string
+          format: date-time
+          nullable: true
+        usage_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        is_active:
+          type: boolean
+      required:
+      - code
+      - discount_type
+      - discount_value
+    CuponValidationRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 50
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      required:
+      - code
+      - subtotal
+    CuponValidationResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        code:
+          type: string
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        discount_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        final_total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+      required:
+      - code
+      - discount_amount
+      - final_total
+      - subtotal
+      - valid
+    DiscountTypeEnum:
+      enum:
+      - percentage
+      - fixed
+      type: string
+      description: |-
+        * `percentage` - Porcentaje
+        * `fixed` - Monto fijo
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/OrderStatusEnum'
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          readOnly: true
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+        cupon:
+          type: integer
+          readOnly: true
+          nullable: true
+        cupon_code:
+          type: string
+          readOnly: true
+        discount_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+        total:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+          readOnly: true
+        paid_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - cupon
+      - cupon_code
+      - discount_amount
+      - id
+      - items
+      - paid_at
+      - status
+      - subtotal
+      - total
+      - updated_at
+      - user
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        variant:
+          type: integer
+          nullable: true
+        product_name:
+          type: string
+          maxLength: 150
+        variant_size:
+          type: string
+          maxLength: 20
+        variant_color:
+          type: string
+          maxLength: 50
+        unit_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        quantity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        subtotal:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+      required:
+      - id
+      - product_name
+      - quantity
+      - subtotal
+      - unit_price
+      - variant_color
+      - variant_size
+    OrderStatusEnum:
+      enum:
+      - pending
+      - paid
+      - cancelled
+      - shipped
+      - delivered
+      type: string
+      description: |-
+        * `pending` - Pendiente
+        * `paid` - Pagado
+        * `cancelled` - Cancelado
+        * `shipped` - Enviado
+        * `delivered` - Entregado
+    OrderStatusUpdateStatusEnum:
+      enum:
+      - cancelled
+      - shipped
+      - delivered
+      type: string
+      description: |-
+        * `cancelled` - cancelled
+        * `shipped` - shipped
+        * `delivered` - delivered
+    PatchedCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+    PatchedCuponRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 50
+        discount_type:
+          $ref: '#/components/schemas/DiscountTypeEnum'
+        discount_value:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        minimum_order_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,2})?$
+        valid_from:
+          type: string
+          format: date-time
+        valid_until:
+          type: string
+          format: date-time
+          nullable: true
+        usage_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          nullable: true
+        is_active:
+          type: boolean
+    PatchedOrderStatusUpdateRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/OrderStatusUpdateStatusEnum'
+    PatchedProductRequest:
+      type: object
+      properties:
+        category:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        description:
+          type: string
+          minLength: 1
+        base_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        is_active:
+          type: boolean
+    PatchedProductVariantRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        size:
+          type: string
+          minLength: 1
+          maxLength: 20
+        color:
+          type: string
+          minLength: 1
+          maxLength: 50
+        stock:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        extra_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+    PatchedResenaRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        comment:
+          type: string
+    PatchedUpdateCartItemRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          minimum: 1
+    PaymentResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+        order:
+          $ref: '#/components/schemas/Order'
+      required:
+      - detail
+      - order
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        category:
+          type: integer
+          nullable: true
+        category_name:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          maxLength: 150
+        description:
+          type: string
+        base_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariant'
+          readOnly: true
+      required:
+      - base_price
+      - category_name
+      - created_at
+      - description
+      - id
+      - name
+      - variants
+    ProductRequest:
+      type: object
+      properties:
+        category:
+          type: integer
+          nullable: true
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        description:
+          type: string
+          minLength: 1
+        base_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 200
+        is_active:
+          type: boolean
+      required:
+      - base_price
+      - description
+      - name
+    ProductVariant:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          type: integer
+        size:
+          type: string
+          maxLength: 20
+        color:
+          type: string
+          maxLength: 50
+        stock:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        extra_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        final_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+      required:
+      - color
+      - final_price
+      - id
+      - product
+      - size
+    ProductVariantRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        size:
+          type: string
+          minLength: 1
+          maxLength: 20
+        color:
+          type: string
+          minLength: 1
+          maxLength: 50
+        stock:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        extra_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+      required:
+      - color
+      - product
+      - size
+    Register:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          nullable: true
+          maxLength: 20
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+      required:
+      - email
+      - id
+      - role
+      - username
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          minLength: 1
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          nullable: true
+          maxLength: 20
+        password:
+          type: string
+          writeOnly: true
+          minLength: 8
+        password2:
+          type: string
+          writeOnly: true
+          minLength: 8
+      required:
+      - email
+      - password
+      - password2
+      - username
+    Resena:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        user_name:
+          type: string
+          readOnly: true
+        product:
+          type: integer
+        product_name:
+          type: string
+          readOnly: true
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        comment:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - product
+      - product_name
+      - rating
+      - updated_at
+      - user
+      - user_name
+    ResenaRequest:
+      type: object
+      properties:
+        product:
+          type: integer
+        rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        comment:
+          type: string
+      required:
+      - product
+      - rating
+    RoleEnum:
+      enum:
+      - client
+      - admin
+      type: string
+      description: |-
+        * `client` - Cliente
+        * `admin` - Administrador
+    TokenObtainPair:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
+    TokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          nullable: true
+          maxLength: 20
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+      required:
+      - email
+      - id
+      - username
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

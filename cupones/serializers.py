@@ -102,3 +102,22 @@ class CuponValidationSerializer(serializers.Serializer):
         decimal_places=2,
         min_value=Decimal('0.01')
     )
+
+class CuponValidationResponseSerializer(serializers.Serializer):
+    valid = serializers.BooleanField()
+    code = serializers.CharField()
+
+    subtotal = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    discount_amount = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )
+
+    final_total = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2
+    )

@@ -154,8 +154,23 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'API E-commerce',
-    'DESCRIPTION': 'API para gestionar productos, variantes, carrito de compras, órdenes, pagos, reseñas, cupones y facturas.',
+    'DESCRIPTION': (
+        'API REST para gestionar usuarios, categorías, productos, '
+        'variantes, carrito, órdenes, pagos, cupones, reseñas '
+        'y facturas PDF.'
+    ),
     'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayRequestDuration': True,
+        'filter': True,
+        'operationsSorter': 'alpha',
+        'tagsSorter': 'alpha',
+    },
 }
 
 CORS_ALLOW_ALL_ORIGINS = True

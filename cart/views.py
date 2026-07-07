@@ -9,10 +9,16 @@ from .serializers import (
     AddCartItemSerializer,
     UpdateCartItemSerializer,
 )
-
+from drf_spectacular.utils import extend_schema
 
 class CartDetailView(APIView):
     permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        tags=['Carrito'],
+        summary='Consultar carrito',
+        responses=CartSerializer,
+    )
 
     def get(self, request):
         cart, created = Cart.objects.get_or_create(user=request.user)
@@ -22,6 +28,12 @@ class CartDetailView(APIView):
 
 class AddCartItemView(APIView):
     permission_classes = [IsAuthenticated]
+    @extend_schema(
+        tags=['Carrito'],
+        summary='Agregar variante al carrito',
+        request=AddCartItemSerializer,
+        responses={201: CartSerializer},
+    )
 
     def post(self, request):
         serializer = AddCartItemSerializer(data=request.data)
@@ -59,6 +71,13 @@ class AddCartItemView(APIView):
 class UpdateCartItemView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['Carrito'],
+        summary='Actualizar item en el carrito',
+        request=UpdateCartItemSerializer,
+        responses={200: CartSerializer},
+    )
+
     def patch(self, request, item_id):
         cart, created = Cart.objects.get_or_create(user=request.user)
 
@@ -93,6 +112,11 @@ class UpdateCartItemView(APIView):
 class RemoveCartItemView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['Carrito'],
+        summary='Eliminar item del carrito',
+        responses={200: CartSerializer},
+    )
     def delete(self, request, item_id):
         cart, created = Cart.objects.get_or_create(user=request.user)
 
@@ -113,6 +137,11 @@ class RemoveCartItemView(APIView):
 class ClearCartView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['Carrito'],
+        summary='Vaciar carrito',
+        responses={200: CartSerializer},
+    )
     def delete(self, request):
         cart, created = Cart.objects.get_or_create(user=request.user)
         cart.items.all().delete()

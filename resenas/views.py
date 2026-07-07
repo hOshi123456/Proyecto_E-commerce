@@ -4,8 +4,10 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .models import Resena
 from .permissions import IsOwnerOrReadOnly
 from .serializers import ResenaSerializer
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=['Reseñas'])
 class ResenaViewSet(viewsets.ModelViewSet):
     serializer_class = ResenaSerializer
 

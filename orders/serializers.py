@@ -2,7 +2,6 @@ from rest_framework import serializers
 
 from .models import Order, OrderItem
 
-
 class OrderItemSerializer(serializers.ModelSerializer):
     subtotal = serializers.DecimalField(
         max_digits=10,
@@ -80,6 +79,15 @@ class OrderSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
         ]
+        read_only_fields = fields
+
+class PaymentResponseSerializer(serializers.Serializer):
+    detail = serializers.CharField()
+    order = OrderSerializer()
+
+class AdminOrderStatusResponseSerializer(serializers.Serializer):
+    detail = serializers.CharField()
+    order = OrderSerializer()
         
 class OrderStatusUpdateSerializer(serializers.Serializer):
     status = serializers.ChoiceField(

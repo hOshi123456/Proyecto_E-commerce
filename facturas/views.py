@@ -22,8 +22,23 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from orders.models import Order
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(
+    tags=['Facturas'],
+    summary='Generar factura en PDF',
+    description=(
+        'Genera un archivo PDF con la factura de una orden pagada. '
+        'El archivo se descarga automáticamente.'
+    ),
+    responses={
+        200: OpenApiTypes.BINARY,
+        400: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
 def formatear_guaranies(valor):
     valor_entero = int(valor)
     return f"Gs. {valor_entero:,}".replace(",", ".")
@@ -32,6 +47,19 @@ def formatear_guaranies(valor):
 class FacturaPDFView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['Facturas'],
+        summary='Generar factura en PDF',
+        description=(
+            'Genera un archivo PDF con la factura de una orden pagada. '
+            'El archivo se descarga automáticamente.'
+        ),
+        responses={
+            200: OpenApiTypes.BINARY,
+            400: OpenApiTypes.OBJECT,
+            404: OpenApiTypes.OBJECT,
+        },
+    )
     def get(self, request, order_id):
         try:
             order = (

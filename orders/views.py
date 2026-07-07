@@ -13,16 +13,28 @@ from catalog.models import ProductVariant
 from cupones.models import Cupon
 
 from .models import Order, OrderItem
+
+
 from .serializers import (
+    AdminOrderStatusResponseSerializer,
     CheckoutSerializer,
     OrderSerializer,
-    OrderStatusUpdateSerializer
+    OrderStatusUpdateSerializer,
+    PaymentResponseSerializer,
 )
+
+from drf_spectacular.utils import extend_schema
+
 
 
 class OrderListView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['Órdenes'],
+        summary='Listar órdenes del usuario',
+        responses={200: OrderSerializer(many=True)},
+    )
     def get(self, request):
         orders = Order.objects.filter(user=request.user)
         serializer = OrderSerializer(orders, many=True)
@@ -32,6 +44,11 @@ class OrderListView(APIView):
 class OrderDetailView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['Órdenes'],
+        summary='Detalles de una orden',
+        responses={200: OrderSerializer},
+    )
     def get(self, request, order_id):
         try:
             order = Order.objects.get(id=order_id, user=request.user)
@@ -48,6 +65,13 @@ class OrderDetailView(APIView):
 class CheckoutView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['Órdenes'],
+        summary='Crear orden desde el carrito',
+        description='Permite aplicar opcionalmente un cupón.',
+        request=CheckoutSerializer,
+        responses={201: OrderSerializer},
+    )
     @transaction.atomic
     def post(self, request):
         input_serializer = CheckoutSerializer(
@@ -173,10 +197,22 @@ class CheckoutView(APIView):
         )
     
 class SimulatePaymentView(APIView):
-     permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-     @transaction.atomic
-     def post(self, request, order_id):
+    @extend_schema(
+        tags=['Órdenes'],
+        summary='Simular pago de una orden',
+        description=(
+            'Marca una orden pendiente como pagada, '
+            'descuenta el stock y registra el uso del cupón.'
+        ),
+        request=None,
+        responses={
+            200: PaymentResponseSerializer,
+        },
+    )
+    @transaction.atomic
+    def post(self, request, order_id):
         try:
             order = Order.objects.select_for_update().get(
                 id=order_id,
@@ -290,6 +326,11 @@ class SimulatePaymentView(APIView):
 class AdminOrderListView(APIView):
     permission_classes = [IsAdminUser]
 
+    @extend_schema(
+        tags=['Órdenes'],
+        summary='Listar todas las órdenes (admin)',
+        responses={200: OrderSerializer(many=True)},
+    )
     def get(self, request):
         orders = (
             Order.objects
@@ -309,6 +350,25 @@ class AdminOrderListView(APIView):
 class AdminOrderStatusView(APIView):
     permission_classes = [IsAdminUser]
 
+    @extend_schema(
+        tags=['Órdenes - Administración'],
+        summary='Actualizar estado de una orden',
+        description=(
+            'Permite al administrador cancelar, enviar '
+            'o marcar una orden como entregada.'
+        ),
+        request=OrderStatusUpdateSerializer,
+        responses={
+            200: AdminOrderStatusResponseSerializer,
+        },
+    )
+    @transaction.atomic
+
+    @extend_schema(
+        tags=['Órdenes'],
+        summary='Actualizar estado de una orden (admin)',
+        responses={200: OrderSerializer},
+    )
     @transaction.atomic
     def patch(self, request, order_id):
         try:

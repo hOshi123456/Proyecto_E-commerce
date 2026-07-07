@@ -7,18 +7,33 @@ from .models import Cupon
 from .serializers import (
     CuponSerializer,
     CuponValidationSerializer,
+    CuponValidationResponseSerializer,
 )
+from drf_spectacular.utils import extend_schema
 
-
+@extend_schema(tags=['Cupones'])
 class CuponViewSet(viewsets.ModelViewSet):
     queryset = Cupon.objects.all()
     serializer_class = CuponSerializer
     permission_classes = [IsAdminUser]
 
 
+@extend_schema(tags=['Cupones'])
 class CuponValidationView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @extend_schema(
+        tags=['Cupones'],
+        summary='Validar cupón',
+        description=(
+            'Comprueba si un cupón está activo y calcula '
+            'el descuento según el subtotal.'
+        ),
+        request=CuponValidationSerializer,
+        responses={
+            200: CuponValidationResponseSerializer,
+        },
+    )
     def post(self, request):
         serializer = CuponValidationSerializer(
             data=request.data

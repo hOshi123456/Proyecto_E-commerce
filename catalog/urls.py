@@ -9,6 +9,7 @@ router.register('categories', CategoryViewSet)
 router.register('products', ProductViewSet)
 router.register('variants', ProductVariantViewSet)
 
+
 urlpatterns = [
     path('', include(router.urls)),
 ]
