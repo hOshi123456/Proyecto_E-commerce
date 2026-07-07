@@ -1,0 +1,419 @@
+{
+    "cliente": {
+        "username": "cliente_demo",
+        "email": "cliente.demo@gmail.com",
+        "first_name": "María",
+        "last_name": "González",
+        "phone": "0981123456",
+        "role": "client",
+        "password": "Cliente2026"
+    },
+    "categorias": [
+        {
+            "name": "Ropa",
+            "description": "Prendas de vestir para diferentes estilos.",
+            "is_active": true
+        },
+        {
+            "name": "Calzado",
+            "description": "Championes, zapatos y otros tipos de calzado.",
+            "is_active": true
+        },
+        {
+            "name": "Accesorios",
+            "description": "Accesorios personales y artículos de uso diario.",
+            "is_active": true
+        },
+        {
+            "name": "Electrónica",
+            "description": "Dispositivos y accesorios tecnológicos.",
+            "is_active": true
+        },
+        {
+            "name": "Hogar",
+            "description": "Artículos útiles y decorativos para el hogar.",
+            "is_active": true
+        },
+        {
+            "name": "Deportes",
+            "description": "Productos para entrenamiento y actividad física.",
+            "is_active": true
+        },
+        {
+            "name": "Belleza",
+            "description": "Productos de cuidado personal y belleza.",
+            "is_active": true
+        },
+        {
+            "name": "Oficina",
+            "description": "Accesorios y herramientas para estudio y trabajo.",
+            "is_active": true
+        }
+    ],
+    "productos": [
+        {
+            "category": "Ropa",
+            "name": "Remera Oversize",
+            "description": "Remera de algodón con corte amplio y cómodo.",
+            "base_price": "120000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "M",
+                    "color": "Negro",
+                    "stock": 15,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "L",
+                    "color": "Blanco",
+                    "stock": 10,
+                    "extra_price": "5000.00"
+                },
+                {
+                    "size": "XL",
+                    "color": "Azul",
+                    "stock": 8,
+                    "extra_price": "10000.00"
+                }
+            ]
+        },
+        {
+            "category": "Ropa",
+            "name": "Buzo con Capucha",
+            "description": "Buzo abrigado con bolsillo frontal.",
+            "base_price": "210000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "M",
+                    "color": "Gris",
+                    "stock": 12,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "L",
+                    "color": "Negro",
+                    "stock": 9,
+                    "extra_price": "10000.00"
+                }
+            ]
+        },
+        {
+            "category": "Calzado",
+            "name": "Championes Urbanos",
+            "description": "Calzado deportivo liviano para uso diario.",
+            "base_price": "285000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "38",
+                    "color": "Blanco",
+                    "stock": 6,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "40",
+                    "color": "Negro",
+                    "stock": 8,
+                    "extra_price": "10000.00"
+                },
+                {
+                    "size": "42",
+                    "color": "Azul",
+                    "stock": 5,
+                    "extra_price": "15000.00"
+                }
+            ]
+        },
+        {
+            "category": "Accesorios",
+            "name": "Mochila Casual",
+            "description": "Mochila con compartimento para notebook.",
+            "base_price": "175000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "Único",
+                    "color": "Negro",
+                    "stock": 14,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "Único",
+                    "color": "Beige",
+                    "stock": 7,
+                    "extra_price": "5000.00"
+                }
+            ]
+        },
+        {
+            "category": "Electrónica",
+            "name": "Auriculares Bluetooth",
+            "description": "Auriculares inalámbricos con estuche de carga.",
+            "base_price": "160000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "Único",
+                    "color": "Negro",
+                    "stock": 20,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "Único",
+                    "color": "Blanco",
+                    "stock": 15,
+                    "extra_price": "5000.00"
+                }
+            ]
+        },
+        {
+            "category": "Electrónica",
+            "name": "Mouse Inalámbrico",
+            "description": "Mouse ergonómico con conexión inalámbrica.",
+            "base_price": "95000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "Estándar",
+                    "color": "Negro",
+                    "stock": 25,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "Estándar",
+                    "color": "Rosa",
+                    "stock": 10,
+                    "extra_price": "8000.00"
+                }
+            ]
+        },
+        {
+            "category": "Hogar",
+            "name": "Lámpara LED de Escritorio",
+            "description": "Lámpara regulable con tres niveles de intensidad.",
+            "base_price": "135000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "Mediana",
+                    "color": "Negro",
+                    "stock": 18,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "Mediana",
+                    "color": "Blanco",
+                    "stock": 12,
+                    "extra_price": "5000.00"
+                }
+            ]
+        },
+        {
+            "category": "Hogar",
+            "name": "Botella Térmica",
+            "description": "Botella de acero inoxidable con capacidad de 750 ml.",
+            "base_price": "85000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "750 ml",
+                    "color": "Negro",
+                    "stock": 25,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "750 ml",
+                    "color": "Azul",
+                    "stock": 16,
+                    "extra_price": "3000.00"
+                },
+                {
+                    "size": "750 ml",
+                    "color": "Rosa",
+                    "stock": 14,
+                    "extra_price": "3000.00"
+                }
+            ]
+        },
+        {
+            "category": "Deportes",
+            "name": "Colchoneta de Yoga",
+            "description": "Colchoneta antideslizante para yoga y ejercicios.",
+            "base_price": "110000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "6 mm",
+                    "color": "Violeta",
+                    "stock": 10,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "8 mm",
+                    "color": "Negro",
+                    "stock": 8,
+                    "extra_price": "15000.00"
+                }
+            ]
+        },
+        {
+            "category": "Deportes",
+            "name": "Mancuernas Ajustables",
+            "description": "Par de mancuernas ajustables para entrenamiento en casa.",
+            "base_price": "320000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "10 kg",
+                    "color": "Negro",
+                    "stock": 7,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "20 kg",
+                    "color": "Negro",
+                    "stock": 5,
+                    "extra_price": "180000.00"
+                }
+            ]
+        },
+        {
+            "category": "Belleza",
+            "name": "Secador de Cabello",
+            "description": "Secador con potencia de 2000 W y tres temperaturas.",
+            "base_price": "195000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "Estándar",
+                    "color": "Negro",
+                    "stock": 11,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "Estándar",
+                    "color": "Rosa",
+                    "stock": 9,
+                    "extra_price": "10000.00"
+                }
+            ]
+        },
+        {
+            "category": "Belleza",
+            "name": "Plancha para Cabello",
+            "description": "Plancha cerámica con temperatura regulable.",
+            "base_price": "170000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "Estándar",
+                    "color": "Negro",
+                    "stock": 13,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "Estándar",
+                    "color": "Blanco",
+                    "stock": 7,
+                    "extra_price": "5000.00"
+                }
+            ]
+        },
+        {
+            "category": "Oficina",
+            "name": "Teclado Mecánico",
+            "description": "Teclado mecánico con iluminación y conexión USB.",
+            "base_price": "245000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "Completo",
+                    "color": "Negro",
+                    "stock": 10,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "Compacto",
+                    "color": "Blanco",
+                    "stock": 6,
+                    "extra_price": "20000.00"
+                }
+            ]
+        },
+        {
+            "category": "Oficina",
+            "name": "Soporte para Notebook",
+            "description": "Soporte regulable de aluminio para notebook.",
+            "base_price": "145000.00",
+            "image_url": "",
+            "is_active": true,
+            "variants": [
+                {
+                    "size": "Hasta 15 pulgadas",
+                    "color": "Gris",
+                    "stock": 17,
+                    "extra_price": "0.00"
+                },
+                {
+                    "size": "Hasta 17 pulgadas",
+                    "color": "Negro",
+                    "stock": 9,
+                    "extra_price": "15000.00"
+                }
+            ]
+        }
+    ],
+    "cupones": [
+        {
+            "code": "DESC10",
+            "discount_type": "percentage",
+            "discount_value": "10.00",
+            "minimum_order_amount": "100000.00",
+            "usage_limit": 20,
+            "valid_days": 60,
+            "is_active": true
+        },
+        {
+            "code": "FIJO30000",
+            "discount_type": "fixed",
+            "discount_value": "30000.00",
+            "minimum_order_amount": "250000.00",
+            "usage_limit": 10,
+            "valid_days": 30,
+            "is_active": true
+        },
+        {
+            "code": "BIENVENIDA15",
+            "discount_type": "percentage",
+            "discount_value": "15.00",
+            "minimum_order_amount": "150000.00",
+            "usage_limit": 50,
+            "valid_days": 90,
+            "is_active": true
+        },
+        {
+            "code": "AHORRA50000",
+            "discount_type": "fixed",
+            "discount_value": "50000.00",
+            "minimum_order_amount": "400000.00",
+            "usage_limit": 15,
+            "valid_days": 45,
+            "is_active": true
+        }
+    ]
+}
